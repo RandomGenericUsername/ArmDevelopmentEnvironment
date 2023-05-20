@@ -5,7 +5,7 @@ export SCRIPTS_LOCATION := setup/scripts
 
 
 # Default target
-install: add_to_gitignore make_executables
+install: add_to_gitignore make_executables download_packages
 
 # Setup target to be executed only the first time
 add_to_gitignore: 
@@ -16,5 +16,7 @@ add_to_gitignore:
 make_executables:
 	@ chmod ${SCRIPTS_PERSMISSIONS} ${SCRIPTS_LOCATION}/*
 
+download_packages:
+	@ ./${SCRIPTS_LOCATION}/download_packages.sh
 
 #add to gitignore
