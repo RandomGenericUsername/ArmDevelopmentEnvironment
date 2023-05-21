@@ -46,7 +46,7 @@ assertFolder()
 {
     FOLDER="$DOWNLOADED_PACKAGES_LOCATION/$PACKAGE_FILE_NAME"
     if [ ! -d "$FOLDER"  ]; then
-        mkdir -p "$FOLDER"    downloadWithWget
+        mkdir -p "$FOLDER"
         echo "Creating directory for file $PACKAGE_FILE_NAME at $FOLDER"
         downloadPackage
     else

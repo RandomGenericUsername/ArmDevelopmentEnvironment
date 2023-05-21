@@ -6,4 +6,4 @@ export SCRIPTS_LOCATION
 
 source "./$SCRIPTS_LOCATION/download_arm_toolchain.sh"
 source "./$SCRIPTS_LOCATION/download_vscode.sh"
-source "./$SCRIPTS_LOCATION/download_openocd.sh"
+#source "./$SCRIPTS_LOCATION/download_openocd.sh"
