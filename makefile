@@ -6,12 +6,7 @@ export GCC_ARM_NONE_EABI_VERSION := 12.2
 export TARGET_ARCHITECTURE := x86_64
 
 # Default target
-install: add_to_gitignore install_requirements make_executables download_packages build_docker_image
-
-add_to_gitignore: 
-	@echo "" >> .gitignore;
-	@echo -e "# Exclude downloaded packages" >> .gitignore;
-	@echo "${DOWNLOADED_PACKAGES_LOCATION}" >> .gitignore;
+install: install_requirements make_executables download_packages build_docker_image
 
 make_executables:
 	@ chmod ${SCRIPTS_PERSMISSIONS} ${SCRIPTS_LOCATION}/*

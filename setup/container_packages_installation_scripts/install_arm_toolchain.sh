@@ -25,8 +25,8 @@ echo "Description: Arm Embedded toolchain" >> gcc-arm-none-eabi/DEBIAN/control
 find . -maxdepth 1 ! -name 'gcc-arm-none-eabi' ! -name '.' -exec mv -t gcc-arm-none-eabi/usr/ {} +
 dpkg-deb --build --root-owner-group gcc-arm-none-eabi
 echo "Installing..."
-dpkg -i gcc-arm-none-eabi.deb 
+dpkg -i --force-overwrite gcc-arm-none-eabi.deb
 arm-none-eabi-gcc --version
 echo "Removing temporary files..."
-rm -r gcc-arm-none-eabi*
+#rm -r gcc-arm-none-eabi*
 echo "Done."
