@@ -41,7 +41,7 @@ build: $(CPP_OBJECTS) $(C_OBJECTS) $(ASM_OBJECTS)
 
 
 $(TARGET): $(CPP_OBJECTS) $(C_OBJECTS) $(ASM_OBJECTS) 
-	$(CXX) -T $(LINKER_PATH) $^ -o $@ -Wl,-Map=$(TARGET:.elf=.map),--cref -mcpu=cortex-m4 --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+	$(CXX) -T $(LINKER_PATH) $^ -o $@ -Wl,-Map=$(TARGET:.elf=.map),--cref -mcpu=cortex-m4 --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group -Wl,--print-memory-usage
 
 # Rule to make the object files
 $(OBJ_DIR)/%.o: $(CORE_DIR)/%.cpp

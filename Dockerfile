@@ -1,4 +1,4 @@
-FROM ubuntu:22.10 AS base
+FROM ubuntu:20.04 AS base
 
 ARG GCC_ARM_NONE_EABI_VERSION_ARG
 ARG TARGET_ARCHITECTURE_ARG
@@ -6,43 +6,42 @@ ARG TARGET_ARCHITECTURE_ARG
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GCC_ARM_NONE_EABI_VERSION=$GCC_ARM_NONE_EABI_VERSION_ARG
 ENV TARGET_ARCHITECTURE=$TARGET_ARCHITECTURE_ARG
+ENV DOWNLOADED_PACKAGES_LOCATION=/home/.downloaded_packages
+ENV INSTALLATION_SCRIPTS_LOCATION=/home/.scripts
+ENV PROJECT_TEMPLATE_LOCATION=/home/template_project
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get install -y pixz gcc g++ git cmake make build-essential ninja-build zsh 
-
-FROM base AS additional
-
-RUN apt-get update -y && \
-    apt-get install -y gnupg libtool libusb-1.0.0 libncurses5 libncurses5-dev wget curl  \
-        libasound2 libatk-bridge2.0-0 libatk1.0-0 \
-        libcairo2 libdbus-1-3 libdrm2 libgbm1 libglib2.0-0 libgtk-3-0 \
-        libnspr4 libnss3 libpango-1.0-0 libsecret-1-0 libx11-6 libxcb1 \
-        libxcomposite1 libxdamage1 libxext6 libxfixes3 libxkbcommon0 libxkbfile1 \
-        libxrandr2 xdg-utils pkg-config texinfo libgmp-dev libmpc-dev bash-completion \
-        vim htop libreadline-dev tmux screen valgrind cppcheck clang-tidy lcov && \
+    apt-get install -y pixz wget curl gcc g++ git autoconf pkg-config automake libtool cmake make build-essential ninja-build zsh \
+    libusb-1.0.0 libusb-dev libusb-1.0.0-dev gnupg libncursesw5 libncurses5-dev \
+    bash-completion vim htop libreadline-dev && \
     apt-get clean
 
-FROM additional as copy_files
-COPY setup/downloaded_packages /tmp/downloaded_packages
-COPY setup/container_packages_installation_scripts /tmp/scripts
-RUN chmod +x /tmp/scripts/*
+COPY setup/downloaded_packages ${DOWNLOADED_PACKAGES_LOCATION} 
+COPY setup/container_packages_installation_scripts ${INSTALLATION_SCRIPTS_LOCATION}
+COPY setup/project_template ${PROJECT_TEMPLATE_LOCATION} 
+RUN chmod +x ${INSTALLATION_SCRIPTS_LOCATION}/*
 
-FROM copy_files as install_arm_toolchain
-RUN /tmp/scripts/install_arm_toolchain.sh
+FROM base as install_openocd
+RUN /home/.scripts/install_openocd.sh
 
-FROM install_arm_toolchain as install_vscode 
-RUN /tmp/scripts/install_vscode.sh
+FROM install_openocd as install_python
+RUN apt-get update -y && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository -y ppa:deadsnakes/ppa && \
+    apt-get update -y && \
+    apt-get install python3.7 -y && \
+    apt-get clean
 
-FROM install_vscode as install_openocd
-RUN /tmp/scripts/install_openocd.sh
+FROM install_python as install_arm_toolchain
+RUN /home/.scripts/install_arm_toolchain.sh
 
-FROM install_openocd as add_project_template
-COPY setup/project_template /home/user/project_template
-
-FROM add_project_template AS add_libusb
-RUN apt-get update && \
-    apt-get install libusb-dev libusb-1.0.0-dev
+FROM install_arm_toolchain as additional_utilities
+RUN apt-get update -y && \
+        apt-get upgrade -y && \
+        apt-get install -y clang-tidy lcov flawfinder cppcheck && \
+        apt-get clean
+        
 
 
 

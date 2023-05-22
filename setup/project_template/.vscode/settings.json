@@ -1,4 +1,4 @@
 {
     "cortex-debug.gdbPath":"/usr/bin/arm-none-eabi-gdb",
-    "cortex-debug.openocdPath":"usr/local/bin/openocd"
+    "cortex-debug.openocdPath":"/usr/local/bin/openocd"
 }
