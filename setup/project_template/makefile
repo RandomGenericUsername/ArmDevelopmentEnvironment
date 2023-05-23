@@ -8,6 +8,7 @@ STARTUP_DIR := Startup
 OBJ_DIR := Debug
 LINKER := stm32_ls.ld
 INC_DIR := Include
+TESTS_DIR := Tests
 OPT_DBG_FLAGS := -g3 -O0
 
 PROJECT_NAME := $(shell basename "$(shell pwd)")
@@ -23,8 +24,8 @@ CFLAGS  := -mcpu=cortex-m4 -std=gnu11 -c ${OPT_DBG_FLAGS} -ffunction-sections -f
 CXXFLAGS:= -mcpu=cortex-m4 -std=gnu++14 -c ${OPT_DBG_FLAGS} -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -MMD -MP --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb $(INC_FLAGS)
 
 # Automatically gather all source files and determine the object and dependency file paths
-CPP_SOURCES_CORE := $(shell find $(CORE_DIR) -name '*.cpp')
-C_SOURCES_CORE   := $(shell find $(CORE_DIR) -name '*.c')
+CPP_SOURCES_CORE := $(shell find $(CORE_DIR) -name '*.cpp' -not -path "$(TESTS_DIR)/*")
+C_SOURCES_CORE   := $(shell find $(CORE_DIR) -name '*.c' -not -path "$(TESTS_DIR)/*")
 ASM_SOURCES_STARTUP := $(shell find $(STARTUP_DIR) -name '*.s')
 CPP_OBJECTS := $(CPP_SOURCES_CORE:$(CORE_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 C_OBJECTS   := $(C_SOURCES_CORE:$(CORE_DIR)/%.c=$(OBJ_DIR)/%.o)
@@ -42,6 +43,8 @@ build: $(CPP_OBJECTS) $(C_OBJECTS) $(ASM_OBJECTS)
 
 $(TARGET): $(CPP_OBJECTS) $(C_OBJECTS) $(ASM_OBJECTS) 
 	$(CXX) -T $(LINKER_PATH) $^ -o $@ -Wl,-Map=$(TARGET:.elf=.map),--cref -mcpu=cortex-m4 --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group -Wl,--print-memory-usage
+	@echo 'Finished building target: $@'
+	@echo ' '
 
 # Rule to make the object files
 $(OBJ_DIR)/%.o: $(CORE_DIR)/%.cpp

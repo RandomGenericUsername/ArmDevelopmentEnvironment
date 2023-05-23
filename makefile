@@ -8,7 +8,7 @@ NAME := arm_env
 TAG := 0.0.1
 
 # Default target
-install: install_requirements make_executables download_packages #build_docker_image
+install: install_requirements make_executables download_packages build_docker_image
 
 make_executables:
 	@ chmod ${SCRIPTS_PERSMISSIONS} ${SCRIPTS_LOCATION}/*

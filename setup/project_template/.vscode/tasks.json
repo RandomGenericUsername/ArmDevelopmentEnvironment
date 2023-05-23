@@ -4,22 +4,58 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "Build Project",
             "type": "process",
             "command": "make",
             "args": ["build"]
         },
         {
-            "label": "flash",
+            "label": "Flash",
             "type": "process",
             "command": "make",
             "args": ["flash"]
         },
         {
-            "label": "clean build",
+            "label": "Clean Project",
             "type": "process",
             "command": "make",
             "args": ["clean"]
         },
+        {
+            "label": "Build Test",
+            "type": "shell",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-std=c++17",
+                "-g",
+                "${workspaceFolder}/Tests/*.cpp",
+                "-o",
+                "${workspaceFolder}/Tests/Build/Test.elf"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Run Test",
+            "type": "shell",
+            "command": "./Test.elf",
+            "options": {
+                "cwd": "${workspaceFolder}/Tests/Build/"
+            },
+            "group": "test",
+            "dependsOn": [
+                "Build Test"
+            ],
+            "presentation": {
+                "reveal": "always"
+            }
+        }
+
     ]
 }

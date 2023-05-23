@@ -18,6 +18,26 @@
                 "/usr/local/share/openocd/scripts/target/stm32f4x.cfg"
             ]
 
-        }
+        },
+        {
+            "name": "Debug Test",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Tests/Build/Test.elf",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb-multiarch",
+            "setupCommands": [
+              {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+              }
+            ]
+          },
     ]
 }

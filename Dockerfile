@@ -19,7 +19,6 @@ RUN apt-get update -y && \
 
 COPY setup/downloaded_packages ${DOWNLOADED_PACKAGES_LOCATION} 
 COPY setup/container_packages_installation_scripts ${INSTALLATION_SCRIPTS_LOCATION}
-COPY setup/project_template ${PROJECT_TEMPLATE_LOCATION} 
 RUN chmod +x ${INSTALLATION_SCRIPTS_LOCATION}/*
 
 FROM base as install_openocd
@@ -42,6 +41,13 @@ RUN apt-get update -y && \
         apt-get install -y clang-tidy lcov flawfinder cppcheck && \
         apt-get clean
         
+FROM additional_utilities as fix_gdb_installation
+RUN apt-get update && \
+    apt-get -o Dpkg::Options::="--force-overwrite" install -y gdb-multiarch
+
+FROM fix_gdb_installation as add_project_template
+COPY setup/project_template ${PROJECT_TEMPLATE_LOCATION} 
+
 
 
 
