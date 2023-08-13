@@ -1,36 +1,61 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
-        {
-            "label": "Build Project",
-            "type": "process",
-            "command": "make",
-            "args": ["build"]
-        },
-        {
-            "label": "Flash",
-            "type": "process",
-            "command": "make",
-            "args": ["flash"]
-        },
         {
             "label": "Clean Project",
             "type": "process",
             "command": "make",
-            "args": ["clean"]
+            "args": [
+                "clean"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Project",
+            "type": "process",
+            "command": "make",
+            "args": [
+                "build"
+            ],
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": ["relative", "${workspaceFolder}"],
+                "pattern": {
+                  "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                  "file": 1,
+                  "line": 2,
+                  "column": 3,
+                  "severity": 4,
+                  "message": 5
+                }
+              },
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Flash Project",
+            "type": "process",
+            "command": "make",
+            "args": [
+                "flash"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "dependsOn": "Clean & Build"
+        },
+        {
+            "label": "Clean & Build",
+            "dependsOrder": "sequence",
+            "dependsOn": ["Clean Project", "Build Project"]
         },
         {
             "label": "Build Test",
             "type": "shell",
-            "command": "/usr/bin/g++",
+            "command": "make",
             "args": [
-                "-std=c++17",
-                "-g",
-                "${workspaceFolder}/Tests/*.cpp",
-                "-o",
-                "${workspaceFolder}/Tests/Build/Test.elf"
+                "build_test"
             ],
             "group": {
                 "kind": "build",
@@ -44,9 +69,9 @@
         {
             "label": "Run Test",
             "type": "shell",
-            "command": "./Test.elf",
+            "command": "./template_project.elf",
             "options": {
-                "cwd": "${workspaceFolder}/Tests/Build/"
+                "cwd": "${workspaceFolder}/Tests/"
             },
             "group": "test",
             "dependsOn": [
@@ -56,6 +81,5 @@
                 "reveal": "always"
             }
         }
-
     ]
 }

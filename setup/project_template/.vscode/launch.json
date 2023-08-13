@@ -4,11 +4,10 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
         {
             "name": "Cortex Debug",
             "cwd": "${workspaceFolder}",
-            "executable": "./Debug/template_project.elf",
+            "executable": "./Debug/stm32F411-libs.elf",
             "request": "launch",
             "type": "cortex-debug",
             "runToEntryPoint": "main",
@@ -16,14 +15,28 @@
             "configFiles": [
                 "/usr/local/share/openocd/scripts/interface/stlink.cfg",
                 "/usr/local/share/openocd/scripts/target/stm32f4x.cfg"
-            ]
+            ],
+        },
+        {
+            "name": "Flash and Debug",
+            "cwd": "${workspaceFolder}",
+            "executable": "./Debug/stm32F411-libs.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "runToEntryPoint": "main",
+            "servertype": "openocd",
+            "configFiles": [
+                "/usr/local/share/openocd/scripts/interface/stlink.cfg",
+                "/usr/local/share/openocd/scripts/target/stm32f4x.cfg"
+            ],
+            "preLaunchTask": "Flash Project"
 
         },
         {
             "name": "Debug Test",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/Tests/Build/Test.elf",
+            "program": "${workspaceFolder}/Tests/template_project.elf",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
