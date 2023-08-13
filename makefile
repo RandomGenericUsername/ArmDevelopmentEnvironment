@@ -24,9 +24,11 @@ install_requirements:
 build_docker_image:
 	@sudo docker build -t ${NAME}:${TAG} -f ${DOCKERFILE} --platform linux/${TARGET_ARCHITECTURE} --build-arg GCC_ARM_NONE_EABI_VERSION_ARG=$(GCC_ARM_NONE_EABI_VERSION) --build-arg TARGET_ARCHITECTURE_ARG=$(TARGET_ARCHITECTURE) .
 
-delete_all_images:
+stop_all_running_images:
 	@sudo docker stop $$(docker ps -aq)
 	@sudo docker rm $$(docker ps -aq)
+
+delete_all_images: stop_all_running_images
 	@sudo docker rmi $$(docker images -aq)
 
 run_container:
