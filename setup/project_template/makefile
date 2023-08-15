@@ -97,10 +97,6 @@ $(TEST_OBJ_DIR)/$(CORE_DIR)/%.o: $(CORE_DIR)/%.cpp
 	@mkdir -p $(@D)
 	$(TEST_CXX) -c $< $(TEST_CXXFLAGS) -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@"
 
-#$(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.cpp
-#	@mkdir -p $(@D)
-#	$(TEST_CXX) -c $< $(TEST_CXXFLAGS) -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@"
-
 $(TEST_OBJ_DIR)/$(TEST_DIR)/%.o: $(TEST_DIR)/%.cpp
 	@mkdir -p $(@D)
 	$(TEST_CXX) -c $< $(TEST_CXXFLAGS) -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@"
