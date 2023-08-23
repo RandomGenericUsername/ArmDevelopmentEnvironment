@@ -1,0 +1,26 @@
+#!/bin/bash
+
+BASE_URL="https://raw.githubusercontent.com/STMicroelectronics/cmsis_device_wl/main/Source/Templates/gcc"
+STARTUP_CM4=startup_${MCU_FAMILY}_cm4.s
+STARTUP_CM0=startup_${MCU_FAMILY}_cm0plus.s
+STARTUP_CM4_SCRIPT_URL="$BASE_URL/${STARTUP_CM4}"
+STARTUP_CM0_SCRIPT_URL="$BASE_URL/${STARTUP_CM0}"
+
+LINKER_SCRIPT_URL="${BASE_URL}/linker"
+CM4_LINKER=${MCU_FAMILY^^}_FLASH_CM4.ld
+CM0_LINKER=${MCU_FAMILY^^}_FLASH_CM0PLUS.ld
+CM4_LINKER_SCRIPT_URL="${BASE_URL}/linker/${CM4_LINKER}"
+CM0_LINKER_SCRIPT_URL="${BASE_URL}/linker/${CM0_LINKER}"
+
+
+curl -L -o ${STARTUP_CM4} "$STARTUP_CM4_SCRIPT_URL"
+curl -L -o ${STARTUP_CM0} "$STARTUP_CM0_SCRIPT_URL"
+curl -L -o ${CM4_LINKER} "$CM4_LINKER_SCRIPT_URL"
+curl -L -o ${CM0_LINKER} "$CM0_LINKER_SCRIPT_URL"
+
+mv ${STARTUP_CM4} "${PROJECT_NAME}/Startup"
+mv ${STARTUP_CM0} "${PROJECT_NAME}/Startup"
+mv ${CM4_LINKER} "${PROJECT_NAME}/Startup"
+mv ${CM0_LINKER} "${PROJECT_NAME}/Startup"
+
+

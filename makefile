@@ -5,7 +5,7 @@ export SCRIPTS_LOCATION := setup/scripts
 export GCC_ARM_NONE_EABI_VERSION := 12.3
 export TARGET_ARCHITECTURE := x86_64
 NAME := arm_env
-TAG := 0.0.3
+TAG := 0.0.1
 LABEL := $(NAME)
 DOCKERFILE := Dockerfile
 
