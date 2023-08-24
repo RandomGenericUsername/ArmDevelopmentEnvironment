@@ -20,15 +20,24 @@ int main(void)
 EOM
 )
 
-echo "$TEST_MAIN_TEMPLATE" > "${PROJECT_NAME}/Tests/main.cpp"
+echo "$TEST_MAIN_TEMPLATE" > "${PROJECT_NAME}/${TESTS_DIR}/main.cpp"
 
 # Create directories based on MCU_SRC_DIRS array
 for dir in "${MCU_SRC_DIRS[@]}"; do
-    echo "$MCU_MAIN_TEMPLATE" > "${PROJECT_NAME}/Core/$dir/main_${dir}.cpp"
+    if [[ ${#MCU_SRC_DIRS[@]} -eq 1  ]]; then
+        S=""
+        s="Src"
+    else
+        S="_${dir}"
+        s=$dir
+    fi
+    echo "$MCU_MAIN_TEMPLATE" > "${PROJECT_NAME}/${CORE_DIR}/$s/main${S}.cpp"
 done
 
-if [[ $IS_DUAL_CORE -eq 0 ]]; then
-    cp syscalls.c sysmem.c "${PROJECT_NAME}/Core/Common"
-else
-    cp syscalls.c sysmem.c "${PROJECT_NAME}/Core/${MCU_SRC_DIR_DEFAULT}"
-fi
+for dir in "${MCU_SRC_DIRS[@]}"; do
+    if [[ ${#MCU_SRC_DIRS[@]} -eq 1 ]]; then
+        cp syscalls.c sysmem.c "${PROJECT_NAME}/${CORE_DIR}/${MCU_SRC_DIR_DEFAULT}"
+    else
+        cp syscalls.c sysmem.c "${PROJECT_NAME}/${CORE_DIR}/${COMMON_DIR}"
+    fi
+done

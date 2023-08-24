@@ -1,9 +1,7 @@
 #!/bin/bash
 
-
-script_name="./get_${MCU_FAMILY}_resources.sh"
-if [[ -f "$script_name" ]]; then
-    source "$script_name"
+if [[ -f "$DOWNLOAD_RESOURCES_SCRIPT_NAME" ]]; then
+    source "$DOWNLOAD_RESOURCES_SCRIPT_NAME"
 else
-    echo "Error: Script $script_name not found!"
+    echo "Error: Script $DOWNLOAD_RESOURCES_SCRIPT_NAME not found!"
 fi
