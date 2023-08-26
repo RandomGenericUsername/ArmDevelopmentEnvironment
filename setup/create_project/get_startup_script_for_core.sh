@@ -2,6 +2,7 @@
 getStartupScriptForCore() {
     local core="$1"
     local st=""
+    local p=""
     
     # Find all .s files in the STARTUP_SCRIPT_DIR
     local s_files=($(find "$PROJECT_NAME/$STARTUP_SCRIPT_DIR" -type f -name "*.s"))
@@ -9,6 +10,7 @@ getStartupScriptForCore() {
     # Check the number of .s files found
     if [[ ${#s_files[@]} -eq 1 ]]; then
         st="${s_files[0]}"
+        p="${st#*/}"
     elif [[ ${#s_files[@]} -gt 1 ]]; then
         for file in "${s_files[@]}"; do
             # Extract the core suffix from the filename (e.g., cm7 from startup_xxxxx_cm7.s)
@@ -18,13 +20,14 @@ getStartupScriptForCore() {
             # Check if the suffix matches the core
             if [[ "$suffix" == "c$core" ]]; then
                 st="$file"
+                p="${st#*/}"
                 break
             fi
         done
     fi
 
     # Return the matched file's name
-    echo "$st"
+    echo "$p"
 }
 
 echo $(getStartupScriptForCore $@)

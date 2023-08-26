@@ -48,6 +48,7 @@ fi
 
 # Common Makefile content
 COMMON_CONTENT=$(cat <<- EOM
+
 # Define cross-compiler
 CC      := arm-none-eabi-gcc
 CXX     := arm-none-eabi-g++
