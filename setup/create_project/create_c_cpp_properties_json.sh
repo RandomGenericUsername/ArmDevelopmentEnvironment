@@ -6,9 +6,10 @@ C_CPP_PROPERTIES_JSON='{
         {
             "name": "Linux",
             "includePath": [
-                "${PROJECT_NAME}/Core/Include/**",
-                "${PROJECT_NAME}/Core/Utils/**",
-                "${PROJECT_NAME}/Core/Drivers/**"
+                "${PROJECT_NAME}/${CORE_DIR}/**",
+                "${PROJECT_NAME}/${CORE_DIR}/${INC_DIR}/**",
+                "${PROJECT_NAME}/${CORE_DIR}/${UTILS_DIR}/**",
+                "${PROJECT_NAME}/${CORE_DIR}/${DRIVERS_DIR}/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/arm-none-eabi-gcc",

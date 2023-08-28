@@ -1,12 +1,5 @@
 #!/bin/bash
 
-STARTUP_SCRIPT=""
-LINKER_SCRIPT=""
-MPU_ARCH=""
-FPU_V=""
-FPU=""
-SRC_PATH=""
-
 declare -A mandatory_options=(
     ["STARTUP_SCRIPT"]="-st or --startup-script"
     ["LINKER_SCRIPT"]="-ld or --linker-script"
@@ -15,96 +8,122 @@ declare -A mandatory_options=(
     ["FPU"]="-fpu"
     ["SRC_PATH"]="-p or --path"
 )
-missing_params=0
-while [[ "$#" -gt 0 ]]; do
-    key="$1"
-    case $key in
-        -st|--startup-script)
-            STARTUP_SCRIPT="$2"
-            shift
-            shift
-            ;;
-        -ld|--linker-script)
-            LINKER_SCRIPT="$2"
-            shift
-            shift
-            ;;
-        -ma|--mpu-arch)
-            MPU_ARCH="$2"
-            shift
-            shift
-            ;;
-        -fv|--fpu-v)
-            FPU_V="$2"
-            shift
-            shift
-            ;;
-        -fpu)
-            FPU="$2"
-            shift
-            shift
-            ;;
-        -p|--path)
-            SRC_PATH="$2"
-            shift
-            shift
-            ;;
-        *)
-            echo "Unknown parameter passed: $1"
-            exit 1
-            ;;
-    esac
-done
 
-for var in "${!mandatory_options[@]}"; do
-    if [[ -z "${!var}" ]]; then
-        echo "Error: Missing ${mandatory_options[$var]} option."
-        missing_params=1
-    fi
-done
+# Functions
+parse_args() {
+    while [[ "$#" -gt 0 ]]; do
+        case $1 in
+            -st|--startup-script) STARTUP_SCRIPT="$2";;
+            -ld|--linker-script) LINKER_SCRIPT="$2";;
+            -ma|--mpu-arch) MPU_ARCH="$2";;
+            -fv|--fpu-v) FPU_V="$2";;
+            -fpu) FPU="$2";;
+            -p|--path) SRC_PATH="$2";;
+            *) echo "Unknown parameter passed: $1"; exit 1;;
+        esac
+        shift; shift
+    done
+}
 
-if [[ $missing_params -eq 1 ]]; then
-    exit 1
-fi
+check_missing_params() {
+    local missing_params=0
+    for var in "${!mandatory_options[@]}"; do
+        if [[ -z "${!var}" ]]; then
+            echo "Error: Missing ${mandatory_options[$var]} option."
+            missing_params=1
+        fi
+    done
+    [[ $missing_params -eq 1 ]] && exit 1
+}
 
-BUILD_PATH_SUFFIX="_${SRC_PATH}"
-SRC_BUILD_PATH="/${SRC_PATH}"
 #if only one core, change mx to Src
-if [[ ${#MCU_SRC_DIRS[@]} -eq 1 ]]; then
-    SRC_PATH=$MCU_SRC_DIR_DEFAULT
-    BUILD_PATH_SUFFIX=""
-    SRC_BUILD_PATH=""
-fi
-
-EXCLUDED_DIRS=""
-TEST_EXCLUDED_DIRS=""
-for dir in "${MCU_SRC_DIRS[@]}"; do
-	if [[ "${#MCU_SRC_DIRS[@]}" -eq 1 ]]; then
-		dir=${MCU_SRC_DIR_DEFAULT}
-	fi
-    if [ "$dir" != "$SRC_PATH" -a "${#MCU_SRC_DIRS[@]}" -gt 1 ]; then
-        EXCLUDED_DIRS+=" -not -path \"../../${CORE_DIR}/${dir}/*\""
+#set build path suffix to none and src build path
+change_pthsfx_bldpth_if_single_core()
+{
+    if [[ ${#MCU_SRC_DIRS[@]} -eq 1 ]]; then
+        SRC_PATH=$MCU_SRC_DIR_DEFAULT
+        BUILD_PATH_SUFFIX=""
+        SRC_BUILD_PATH=""
     fi
-    TEST_EXCLUDED_DIRS+=" -not -path \"../../${CORE_DIR}/${dir}/*\""
-done
+}
 
-if [[ ${#MCU_SRC_DIRS[@]} -eq 1 ]]; then
-    TESTS_EXCLUDED_DIRS=$MCU_SRC_DIR_DEFAULT
-else 
-    TESTS_EXCLUDED_DIRS=${MCU_SRC_DIRS[@]}
-fi
+exclude_files()
+{
+    #iterate over the cores
+    for dir in "${MCU_SRC_DIRS[@]}"; do
+        #if only one core, change its name to Src instead of mx
+        if [[ "${#MCU_SRC_DIRS[@]}" -eq 1 ]]; then
+            dir=${MCU_SRC_DIR_DEFAULT}
+        fi
+        #if more than one core, exlude all the other cores from being source file for this one
+        if [ "$dir" != "$SRC_PATH" -a "${#MCU_SRC_DIRS[@]}" -gt 1 ]; then
+            EXCLUDED_DIRS+=" -not -path \"../../${CORE_DIR}/${dir}/*\""
+        fi
+        #Add all cores to exclude from test build
+        TEST_EXCLUDED_DIRS+=" -not -path \"../../${CORE_DIR}/${dir}/*\""
+    done
 
+    #build an array containing the files specifically to be excluded from test build(for example, sysmem.c syscalls.c)
+    if [[ ${#MCU_SRC_DIRS[@]} -eq 1 ]]; then
+        TESTS_EXCLUDED_DIRS=$MCU_SRC_DIR_DEFAULT
+    else 
+        TESTS_EXCLUDED_DIRS=${MCU_SRC_DIRS[@]}
+    fi
+    #iterate 
+    for file in "${TEST_EXCLUDED_FILES[@]}"; do
+        TEST_EXCLUDED_FILES_STR+=" -not -name \"${file}\""
+    done
+}
+
+set_fpu_flags()
+{
+    if [[ ${FPU_PER_PROCESSOR[$SRC_PATH]} != "none" ]];then
+        FPU_FLAGS="-mfpu=${FPU_V} -mfloat-abi=${FPU}"
+    fi
+}
+get_core_name()
+{
+    string=$1
+    echo "${string##*-}"
+}
+
+target_config_name=${TARGET_CONFIG[${MCU_FAMILY}]}
+declare -n target_config=$target_config_name
+
+target_sel_name=${TARGET_SEL[${MCU_FAMILY}]}
+declare -n target_sel=$target_sel_name
+
+interface_config_name=${INTERFACE_CONFIG[${MCU_FAMILY}]}
+declare -n interface_config=$interface_config_name
+
+
+STARTUP_SCRIPT=""
+LINKER_SCRIPT=""
+MPU_ARCH=""
+FPU_V=""
+FPU=""
+SRC_PATH=""
+#if there is more than one core, the build directory is Build/mx. if single core -> Build/
+SRC_BUILD_PATH="/${SRC_PATH}"
+#if there is more than one core, the target is projectName_mx.elf. if single core -> projectName.elf
+BUILD_PATH_SUFFIX="_${SRC_PATH}"
+#Directories excluded from the main build
+EXCLUDED_DIRS=""
+#Directories excluded from the test build
+TEST_EXCLUDED_DIRS=""
 TEST_EXCLUDED_FILES_STR=""
-for file in "${TEST_EXCLUDED_FILES[@]}"; do
-    TEST_EXCLUDED_FILES_STR+=" -not -name \"${file}\""
-done
+FPU_FLAGS=""
 
-board_or_target_data=${IS_BOARD_OR_TARGET["${MCU_FAMILY}"]}
-words=($board_or_target_data)
-board_or_target="${words[0]}"
-board_or_target_value="${words[1]}"
+# Main script execution
+parse_args "$@"
+check_missing_params
+change_pthsfx_bldpth_if_single_core
+exclude_files
 
-INTERFACE="stlink"
+core_name="$(get_core_name ${MPU_ARCH})"
+BOARD_OR_TARGET=${target_sel[$core_name]}
+BOARD_OR_TARGET_VALUE=${target_config[$core_name]}
+INTERFACE=${interface_config[$core_name]}
 
 CORE_REL_PATH="../../${CORE_DIR}"
 STARTUP_REL_PATH="../../${STARTUP_DIR}"
@@ -121,7 +140,7 @@ TEST_TARGET=${TEST_BUILD_PATH}/${PROJECT_NAME}${BUILD_PATH_SUFFIX}.elf
 # Define include directories
 INC_DIRS="\$(shell find ${CORE_REL_PATH} -type d -name .svn -prune -o -type d -print)"
 INC_FLAGS="\$(addprefix -I, \$(INC_DIRS))"
-COMMON_FLAGS="-mthumb -mcpu=${MPU_ARCH} -mfpu=${FPU_V} -mfloat-abi=${FPU} ${NANO_SPECS}"
+COMMON_FLAGS="-mthumb -mcpu=${MPU_ARCH} ${NANO_SPECS} ${FPU_FLAGS}"
 COMPILATION_COMMON_FLAGS="${INC_FLAGS} ${COMMON_FLAGS} ${OPT_DBG_FLAGS} ${FF_SECTIONS} ${FDATA_SECTIONS} ${EXCEPTIONS_FLAG} -Wall -fstack-usage"
 C_FLAGS_DEF="${COMPILATION_COMMON_FLAGS}"
 CXX_FLAGS_DEF="${COMPILATION_COMMON_FLAGS} ${RTTI} ${FNO_CXA_ATEXIT}"
@@ -189,7 +208,7 @@ all: clean build_project
 build_project: \$(TARGET)
 
 flash: all
-	openocd -f interface/${INTERFACE}.cfg -f $board_or_target/$board_or_target_value.cfg -c "program \$(TARGET) verify reset exit"
+	openocd -f interface/$INTERFACE.cfg -f $BOARD_OR_TARGET/$BOARD_OR_TARGET_VALUE.cfg -c "program \$(TARGET) verify reset exit"
 
 build_test: clean_test \$(TEST_TARGET)
 

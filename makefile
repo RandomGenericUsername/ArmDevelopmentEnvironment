@@ -38,6 +38,10 @@ delete_all_images: stop_all_running_images
 run_container:
 	@sudo docker run --name ${LABEL} -it --privileged -v /dev/bus/usb:/dev/bus/usb ${NAME}:${TAG} 
 
+start_container:
+	@sudo docker start -ia ${NAME} 
+
+
 
 
 

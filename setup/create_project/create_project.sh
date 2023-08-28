@@ -50,8 +50,8 @@ source ./populate_mcu_src_dirs.sh
 source ./create_basic_file_structure.sh
 source ./download_cmsis.sh
 source ./download_linker_and_startup_script.sh
-#./create_settings_json.sh
-#source ./create_c_cpp_properties_json.sh 
+./create_settings_json.sh
+source ./create_c_cpp_properties_json.sh 
 source ./copy_files.sh
 set --
 source ./move_makefiles.sh
