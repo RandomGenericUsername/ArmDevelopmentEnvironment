@@ -12,7 +12,7 @@ getLinkerScriptForCore() {
     # Check the number of .ld files found
     if [[ ${#ld_files[@]} -eq 1 ]]; then
         linker_script="${ld_files[0]}"
-        p="${linker_script#*/}"
+        p="${linker_script##*/}"
     elif [[ ${#ld_files[@]} -gt 1 ]]; then
         for file in "${ld_files[@]}"; do
             # Extract the core suffix from the filename
@@ -22,7 +22,7 @@ getLinkerScriptForCore() {
             # Check if the suffix matches the core and the memory type
             if [[ "$suffix" == "c$core" && "$file" == *"$memory_type"* ]]; then
                 linker_script="$file"
-                p="${linker_script#*/}"
+                p="${linker_script##*/}"
                 break
             fi
         done

@@ -1,11 +1,24 @@
 #!/bin/bash
 
 MCU_MAIN_TEMPLATE=$(cat <<- EOM
+
+extern "C"{
+
+    void SystemInit(void);
+}
+
 int main(void)
 {
 
     return 0;
 }
+
+
+void SystemInit(void)
+{
+    
+}
+
 EOM
 )
 
@@ -17,6 +30,7 @@ int main(void)
     std::cout << "Test is working" << std::endl;
     return 0;
 }
+
 EOM
 )
 

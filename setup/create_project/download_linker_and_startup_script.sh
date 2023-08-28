@@ -5,3 +5,5 @@ if [[ -f "$DOWNLOAD_RESOURCES_SCRIPT_NAME" ]]; then
 else
     echo "Error: Script $DOWNLOAD_RESOURCES_SCRIPT_NAME not found!"
 fi
+
+source ./to_lower_case.sh

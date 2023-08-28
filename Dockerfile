@@ -16,7 +16,7 @@ COPY setup/container_packages_installation_scripts ${INSTALLATION_SCRIPTS_LOCATI
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get install -y pixz wget curl gcc g++ git autoconf pkg-config automake libtool cmake make build-essential ninja-build zsh \
+    apt-get install -y pixz wget curl gcc g++ git subversion autoconf pkg-config automake libtool cmake make build-essential ninja-build zsh \
     libusb-1.0.0 libusb-dev libusb-1.0.0-dev gnupg libncursesw5 libncurses5-dev \
     bash-completion vim htop libreadline-dev clang clang-tidy lcov flawfinder cppcheck && \
     apt-get clean
@@ -38,4 +38,5 @@ RUN echo "deb http://archive.ubuntu.com/ubuntu/ jammy main restricted universe m
 RUN apt-get update && \
     apt-get -o Dpkg::Options::="--force-overwrite" install -y gdb-multiarch
 
-COPY setup/create_basic_project ${CREATE_PROJECT_SCRIPT}
+COPY setup/create_project ${CREATE_PROJECT_SCRIPT}
+ENV PATH="${PATH}:${CREATE_PROJECT_SCRIPT}"

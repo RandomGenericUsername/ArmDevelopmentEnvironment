@@ -10,7 +10,7 @@ getStartupScriptForCore() {
     # Check the number of .s files found
     if [[ ${#s_files[@]} -eq 1 ]]; then
         st="${s_files[0]}"
-        p="${st#*/}"
+        p="${st##*/}"
     elif [[ ${#s_files[@]} -gt 1 ]]; then
         for file in "${s_files[@]}"; do
             # Extract the core suffix from the filename (e.g., cm7 from startup_xxxxx_cm7.s)
@@ -20,7 +20,7 @@ getStartupScriptForCore() {
             # Check if the suffix matches the core
             if [[ "$suffix" == "c$core" ]]; then
                 st="$file"
-                p="${st#*/}"
+                p="${st##*/}"
                 break
             fi
         done

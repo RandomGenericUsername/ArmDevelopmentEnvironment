@@ -28,6 +28,10 @@ stop_all_running_images:
 	@sudo docker stop $$(docker ps -aq)
 	@sudo docker rm $$(docker ps -aq)
 
+delete_untagged_images:
+	@docker rmi $$(docker images -f "dangling=true" -q)
+
+
 delete_all_images: stop_all_running_images
 	@sudo docker rmi $$(docker images -aq)
 
