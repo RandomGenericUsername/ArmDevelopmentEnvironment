@@ -8,4 +8,3 @@ SETTINGS="
 
 
 echo "${SETTINGS}" > "${PROJECT_NAME}/.vscode/settings.json"
-echo "settings.json has been created!"
