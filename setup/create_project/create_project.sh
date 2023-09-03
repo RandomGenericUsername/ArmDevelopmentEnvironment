@@ -45,6 +45,8 @@ export COMMON_DIR=Common
 
 source ./stm_mcu_families.sh
 source ./parse_commands.sh "$@"
+source ./download_svd_files.sh
+exit 0
 export DOWNLOAD_RESOURCES_SCRIPT_NAME="./get_${MCU_FAMILY}_resources.sh"
 source ./populate_mcu_src_dirs.sh
 source ./create_basic_file_structure.sh

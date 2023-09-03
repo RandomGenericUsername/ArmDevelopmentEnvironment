@@ -43,10 +43,12 @@ for dir in "${MCU_SRC_DIRS[@]}"; do
         suffix=""
         create_rule --target "build_test" --command "\$(MAKE) -C ${CORE_DIR}/${dir} build_test"
         create_rule --target "clean_test" --command "\$(MAKE) -C ${CORE_DIR}/${dir} clean_test"
+        create_rule --target "run_test" --command "\$(MAKE) -C ${CORE_DIR}/${dir} run_test"
     else 
         if [[ "$dir" == "${MCU_SRC_DIRS[0]}" ]]; then
             create_rule --target "build_test" --command "\$(MAKE) -C ${CORE_DIR}/${dir} build_test"
             create_rule --target "clean_test" --command "\$(MAKE) -C ${CORE_DIR}/${dir} clean_test"
+            create_rule --target "run_test" --command "\$(MAKE) -C ${CORE_DIR}/${dir} run_test"
         fi    
     fi
     create_rule --target "all${suffix}" --command "\$(MAKE) -C ${CORE_DIR}/${dir} all"

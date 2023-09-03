@@ -95,7 +95,7 @@ COMMON_TASKS=$(cat << EOM
             "type": "process",
             "command": "make",
             "args": [
-                "test"
+                "build_test"
             ],
         },
         {

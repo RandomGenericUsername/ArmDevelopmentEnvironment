@@ -1,14 +1,14 @@
 #!/bin/bash
 
-COMMON_CONFIG=$(cat << 'EOM'
+COMMON_CONFIG=$(cat << EOM
 {
     "name": "Debug Test",
     "type": "cppdbg",
     "request": "launch",
-    "program": "${workspaceFolder}/${BUILD_DIR}/${TESTS_DIR}/stm32F411-libs.elf",
+    "program": "\${workspaceFolder}/${BUILD_DIR}/${TESTS_DIR}/${PROJECT_NAME}_test.elf",
     "args": [],
     "stopAtEntry": false,
-    "cwd": "${workspaceFolder}",
+    "cwd": "\${workspaceFolder}",
     "environment": [],
     "externalConsole": false,
     "MIMode": "gdb",
@@ -30,7 +30,7 @@ for cores in ${MCU_SRC_DIRS[@]}; do
 {
     "name": "Cortex Debug ${cores}",
     "cwd": "${workspaceFolder}",
-    "executable": "./Debug/stm32F411-libs.elf",
+    "executable": "./${BUILD_DIR}/${cores}/${PROJECT_NAME}_${cores}.elf",
     "request": "launch",
     "type": "cortex-debug",
     "runToEntryPoint": "main",
@@ -43,7 +43,7 @@ for cores in ${MCU_SRC_DIRS[@]}; do
 {
     "name": "Flash and Debug ${cores}",
     "cwd": "${workspaceFolder}",
-    "executable": "./Debug/stm32F411-libs.elf",
+    "executable": "./${BUILD_DIR}/${cores}/${PROJECT_NAME}_${cores}.elf",
     "request": "launch",
     "type": "cortex-debug",
     "runToEntryPoint": "main",
