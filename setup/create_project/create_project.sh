@@ -52,6 +52,8 @@ source ./download_cmsis.sh
 source ./download_linker_and_startup_script.sh
 ./create_settings_json.sh
 source ./create_c_cpp_properties_json.sh 
+source ./create_tasks_json.sh
+source ./create_launch_json.sh
 source ./copy_files.sh
 set --
 source ./move_makefiles.sh
