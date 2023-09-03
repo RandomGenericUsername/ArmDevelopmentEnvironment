@@ -1,0 +1,148 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Clean Project",
+            "type": "process",
+            "command": "make",
+            "args": [
+                "clean"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Project",
+            "type": "process",
+            "command": "make",
+            "args": [
+                "all"
+            ],
+        },
+        {
+            "label": "Flash Project",
+            "type": "process",
+            "command": "make",
+            "args": [
+                "flash"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": ["Clean Project", "Build Project"]	
+        },
+        {
+            "label": "Build Test",
+            "type": "process",
+            "command": "make",
+            "args": [
+                "build_test"
+            ],
+        },
+        {
+            "label": "Run Test",
+            "type": "process",
+            "command": "make",
+            "args": [
+                "run_test"
+            ],
+        },
+		{
+		    //Build for Core m4
+		    "label": "Build Core m4",
+		    "type": "process",
+		    "command": "make",
+		    "args": [
+		        "build_project_m4"
+		    ],
+			"problemMatcher": {
+			    "owner": "cpp",
+			    "fileLocation": ["relative", "${workspaceFolder}"],
+			    "pattern": {
+			      "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+			      "file": 1,
+			      "line": 2,
+			      "column": 3,
+			      "severity": 4,
+			      "message": 5
+			    }
+			},
+			"presentation": {
+			    "reveal": "always"
+			}
+		},
+		{
+		    //Clean for Core m4
+		    "label": "Clean Core m4",
+		    "type": "process",
+		    "command": "make",
+		    "args": [
+		        "clean_m4"
+		    ],
+		},
+		{
+			"label": "Flash Core m4",
+		    "type": "process",
+		    "command": "make",
+		    "args": [
+		        "flash_m4"
+		    ],
+		    "presentation": {
+		        "reveal": "always"
+		    },
+		    "dependsOn": "Clean Core m4 & Build Core m4"
+		},
+		{
+			"label": "Clean & Build Core m4",
+		    "dependsOrder": "sequence",
+		    "dependsOn": ["Clean Core m4", "Build Core m4"]	
+		},
+		{
+		    //Build for Core m7
+		    "label": "Build Core m7",
+		    "type": "process",
+		    "command": "make",
+		    "args": [
+		        "build_project_m7"
+		    ],
+			"problemMatcher": {
+			    "owner": "cpp",
+			    "fileLocation": ["relative", "${workspaceFolder}"],
+			    "pattern": {
+			      "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+			      "file": 1,
+			      "line": 2,
+			      "column": 3,
+			      "severity": 4,
+			      "message": 5
+			    }
+			},
+			"presentation": {
+			    "reveal": "always"
+			}
+		},
+		{
+		    //Clean for Core m7
+		    "label": "Clean Core m7",
+		    "type": "process",
+		    "command": "make",
+		    "args": [
+		        "clean_m7"
+		    ],
+		},
+		{
+			"label": "Flash Core m7",
+		    "type": "process",
+		    "command": "make",
+		    "args": [
+		        "flash_m7"
+		    ],
+		    "presentation": {
+		        "reveal": "always"
+		    },
+		    "dependsOn": "Clean Core m7 & Build Core m7"
+		},
+		{
+			"label": "Clean & Build Core m7",
+		    "dependsOrder": "sequence",
+		    "dependsOn": ["Clean Core m7", "Build Core m7"]	
+		},
+    ]
+}

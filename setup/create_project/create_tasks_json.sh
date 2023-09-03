@@ -91,6 +91,16 @@ COMMON_TASKS=$(cat << EOM
             ],
         },
         {
+            "label": "Flash Project",
+            "type": "process",
+            "command": "make",
+            "args": [
+                "flash"
+            ],
+            "dependsOrder": "sequence",
+            "dependsOn": ["Clean Project", "Build Project"]	
+        },
+        {
             "label": "Build Test",
             "type": "process",
             "command": "make",

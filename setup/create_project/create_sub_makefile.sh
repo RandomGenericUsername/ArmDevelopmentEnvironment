@@ -113,13 +113,13 @@ FPU_FLAGS=""
 # Main script execution
 parse_args "$@"
 check_missing_params
-change_pthsfx_bldpth_if_single_core
 exclude_files
 
 #if there is more than one core, the build directory is Build/mx. if single core -> Build/
 SRC_BUILD_PATH="/${SRC_PATH}"
 #if there is more than one core, the target is projectName_mx.elf. if single core -> projectName.elf
 BUILD_PATH_SUFFIX="_${SRC_PATH}"
+change_pthsfx_bldpth_if_single_core
 
 core_name="$(get_core_name ${MPU_ARCH})"
 BOARD_OR_TARGET=${target_sel[$core_name]}
