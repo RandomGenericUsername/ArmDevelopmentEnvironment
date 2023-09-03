@@ -103,10 +103,6 @@ MPU_ARCH=""
 FPU_V=""
 FPU=""
 SRC_PATH=""
-#if there is more than one core, the build directory is Build/mx. if single core -> Build/
-SRC_BUILD_PATH="/${SRC_PATH}"
-#if there is more than one core, the target is projectName_mx.elf. if single core -> projectName.elf
-BUILD_PATH_SUFFIX="_${SRC_PATH}"
 #Directories excluded from the main build
 EXCLUDED_DIRS=""
 #Directories excluded from the test build
@@ -119,6 +115,11 @@ parse_args "$@"
 check_missing_params
 change_pthsfx_bldpth_if_single_core
 exclude_files
+
+#if there is more than one core, the build directory is Build/mx. if single core -> Build/
+SRC_BUILD_PATH="/${SRC_PATH}"
+#if there is more than one core, the target is projectName_mx.elf. if single core -> projectName.elf
+BUILD_PATH_SUFFIX="_${SRC_PATH}"
 
 core_name="$(get_core_name ${MPU_ARCH})"
 BOARD_OR_TARGET=${target_sel[$core_name]}
@@ -157,8 +158,8 @@ TEST_C_SOURCES_CORE="\$(shell find ${TESTS_REL_PATH} -name '*.c') \$(shell find 
 ASM_OBJECTS="\$(STARTUP_SCRIPT_PATH:\${STARTUP_REL_PATH}/%.s=\$(OBJ_DIR)/${STARTUP_DIR}/%.o)"
 CXX_OBJECTS="\$(CXX_SOURCES_CORE:\${CORE_REL_PATH}/%.cpp=\$(OBJ_DIR)/%.o)"
 C_OBJECTS="\$(C_SOURCES_CORE:\${CORE_REL_PATH}/%.c=\$(OBJ_DIR)/%.o)"
-TEST_CXX_OBJ="\$(TEST_CXX_SOURCES_CORE:../../%.cpp=${TEST_OBJ_DIR}/%.o)"
-TEST_C_OBJ="\$(TEST_C_SOURCES_CORE:../../%.c=${TEST_OBJ_DIR}/%.o)"
+TEST_CXX_OBJ="\$(TEST_CXX_SOURCES_CORE:../..//%.cpp=${TEST_OBJ_DIR}/%.o)"
+TEST_C_OBJ="\$(TEST_C_SOURCES_CORE:../..//%.c=${TEST_OBJ_DIR}/%.o)"
 
 DEPS="\$(CXX_OBJECTS:.o=.d) \$(C_OBJECTS:.o=.d) \$(ASM_OBJECTS:.o=.d)"
 
@@ -221,6 +222,7 @@ run_test: build_test
 	@echo ' '
 
 \$(TEST_TARGET): \$(TEST_CXX_OBJECTS) \$(TEST_C_OBJECTS)
+	@mkdir -p \$(dir \$@)  
 	\$(TEST_CXX) $^ -o \$@
 	@echo 'Finished building test target: \$@'
 	@echo ' '
@@ -256,10 +258,10 @@ run_test: build_test
 .PHONY: clean clean_test
 
 clean:
-	rm -rf \$(OBJ_DIR)
+	rm -rf \$(OBJ_DIR)/* \$(TARGET)
 
 clean_test:
-	rm -rf \$(TEST_OBJ_DIR)
+	rm -rf \$(TEST_OBJ_DIR) \$(TEST_TARGET)
 
 EOM
 )
