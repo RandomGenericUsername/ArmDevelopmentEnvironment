@@ -26,6 +26,14 @@ EOM
 
 DEDICATED_CONFIGS=""
 for cores in ${MCU_SRC_DIRS[@]}; do
+    svd_file=$(find "${PROJECT_NAME}" -name '*.svd' )
+    if [[ ${#MCU_SRC_DIRS[@]} -gt 1 ]];then
+        cores=${cores^^}
+        svd_file=$(echo "${svd_file}" |  grep -E "${UPPERCASE_MCU_FAMILY:0:8}[a-z A-Z 0-9]_C${cores:0:3}\.svd$")
+    fi
+    svd_file="${svd_file#*/}"
+    echo $svd_file
+
     DEDICATED_CONFIGS+=$(cat << EOM
 {
     "name": "Cortex Debug ${cores}",
@@ -38,7 +46,9 @@ for cores in ${MCU_SRC_DIRS[@]}; do
     "configFiles": [
         "/usr/local/share/openocd/scripts/interface/stlink.cfg",
         "/usr/local/share/openocd/scripts/target/stm32f4x.cfg"
-    ]
+    ],
+    "svdFile": "${svd_file}"
+
 },
 {
     "name": "Flash and Debug ${cores}",
@@ -70,3 +80,4 @@ EOM
 )
 
 echo "${LAUNCH_JSON}" > $PROJECT_NAME/.vscode/launch.json
+

@@ -45,8 +45,6 @@ export COMMON_DIR=Common
 
 source ./stm_mcu_families.sh
 source ./parse_commands.sh "$@"
-source ./download_svd_files.sh
-exit 0
 export DOWNLOAD_RESOURCES_SCRIPT_NAME="./get_${MCU_FAMILY}_resources.sh"
 source ./populate_mcu_src_dirs.sh
 source ./create_basic_file_structure.sh
@@ -55,6 +53,7 @@ source ./download_linker_and_startup_script.sh
 ./create_settings_json.sh
 source ./create_c_cpp_properties_json.sh 
 source ./create_tasks_json.sh
+source ./download_svd_files.sh
 source ./create_launch_json.sh
 source ./copy_files.sh
 set --
