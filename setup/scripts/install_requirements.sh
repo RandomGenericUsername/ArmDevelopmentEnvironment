@@ -72,4 +72,5 @@ PACKAGE_MANAGER=""
 
 assignPackageManager
 installDocker
+sudo systemctl start docker
 eval "sudo $PACKAGE_MANAGER install git make curl wget"
