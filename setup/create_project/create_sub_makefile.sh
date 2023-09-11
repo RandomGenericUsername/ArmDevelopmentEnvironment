@@ -169,6 +169,7 @@ CC := ${CC}
 CXX := ${CXX}
 TEST_CC := ${TEST_CC}
 TEST_CXX := ${TEST_CXX}
+OBJCOPY := ${OBJCOPY}
 
 INTERFACE := ${INTERFACE}
 BUILD_PATH := ${BUILD_PATH}
@@ -204,14 +205,16 @@ DEPS := ${DEPS}
 
 -include \$(DEPS)
 
-all: clean build_project
+all: clean build
 
-build_project: \$(TARGET)
+build: \$(TARGET) \$(TARGET:.elf=.bin)
 
 flash: all
-	openocd -f interface/$INTERFACE.cfg -f $BOARD_OR_TARGET/$BOARD_OR_TARGET_VALUE.cfg -c "program \$(TARGET) verify reset exit"
+	st-flash --reset write \$(TARGET:.elf=.bin)
 
-build_test: clean_test \$(TEST_TARGET)
+all_test: clean_test build_test
+
+build_test:\$(TEST_TARGET)
 
 run_test: build_test
 	@./\$(TEST_TARGET)
@@ -220,6 +223,12 @@ run_test: build_test
 	\$(CXX) -T \$(LINKER_SCRIPT_PATH) $^ -o \$@ \$(LINKER_FLAGS)
 	@echo 'Finished building target: \$@'
 	@echo ' '
+
+# Rule to convert .elf to .bin
+\$(TARGET:.elf=.bin): \$(TARGET)
+    \$(OBJCOPY) -O binary $< \$@
+    @echo 'Finished building binary: $@'
+    @echo ' '
 
 \$(TEST_TARGET): \$(TEST_CXX_OBJECTS) \$(TEST_C_OBJECTS)
 	@mkdir -p \$(dir \$@)  

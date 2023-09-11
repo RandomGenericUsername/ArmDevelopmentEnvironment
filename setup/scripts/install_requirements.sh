@@ -72,5 +72,13 @@ PACKAGE_MANAGER=""
 
 assignPackageManager
 installDocker
-sudo systemctl start docker
 eval "sudo $PACKAGE_MANAGER install git make curl wget"
+eval "sudo $PACKAGE_MANAGER update"
+eval "sudo $PACKAGE_MANAGER install python3"
+eval "sudo $PACKAGE_MANAGER install python3-pip"
+eval "sudo $PACKAGE_MANAGER install redis-server"
+sudo systemctl start docker
+sudo systemctl start redis-server
+pip3 install redis
+
+

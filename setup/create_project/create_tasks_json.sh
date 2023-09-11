@@ -28,23 +28,29 @@ if [[ ${#MCU_SRC_DIRS[@]} -gt 1 ]]; then
         INDENTED_PROBLEM_MATCHER=$(printf "$PROBLEM_MATCHER" | sed 's/^/\t/')
         DEDICATED_MAKE_RULES+=$(cat << EOM
 {
-    //Build for Core ${cores}
+    //Build Core ${cores}
     "label": "Build Core ${cores}",
     "type": "process",
     "command": "make",
     "args": [
-        "build_project_${cores}"
+        "build_${cores}"
     ],
+    "presentation": {
+        "reveal": "always"
+    },
 $INDENTED_PROBLEM_MATCHER
 },
 {
-    //Clean for Core ${cores}
+    //Clean Core ${cores}
     "label": "Clean Core ${cores}",
     "type": "process",
     "command": "make",
     "args": [
         "clean_${cores}"
     ],
+    "presentation": {
+        "reveal": "always"
+    },
 },
 {
 	"label": "Flash Core ${cores}",
@@ -56,12 +62,17 @@ $INDENTED_PROBLEM_MATCHER
     "presentation": {
         "reveal": "always"
     },
-    "dependsOn": "Clean Core ${cores} & Build Core ${cores}"
 },
 {
 	"label": "Clean & Build Core ${cores}",
-    "dependsOrder": "sequence",
-    "dependsOn": ["Clean Core ${cores}", "Build Core ${cores}"]	
+    "type": "process",
+    "command": "make",
+    "args": [
+        "all_${cores}"
+    ],
+    "presentation": {
+        "reveal": "always"
+    },
 },
 EOM
 )\\n
@@ -87,6 +98,14 @@ COMMON_TASKS=$(cat << EOM
             "type": "process",
             "command": "make",
             "args": [
+                "build"
+            ],
+        },
+        {
+            "label": "Clean & Build Project",
+            "type": "process",
+            "command": "make",
+            "args": [
                 "all"
             ],
         },
@@ -98,7 +117,15 @@ COMMON_TASKS=$(cat << EOM
                 "flash"
             ],
             "dependsOrder": "sequence",
-            "dependsOn": ["Clean Project", "Build Project"]	
+            "dependsOn": ["Clean & Build Project"]	
+        },
+        {
+            "label": "Clean & Build Test",
+            "type": "process",
+            "command": "make",
+            "args": [
+                "all_test"
+            ],
         },
         {
             "label": "Build Test",

@@ -7,6 +7,7 @@ cd "$(dirname "$0")"
 # Define cross-compiler
 export CC=arm-none-eabi-gcc
 export CXX=arm-none-eabi-g++
+export OBJCOPY=arm-none-eabi-objcopy
 export TEST_CC=gcc
 export TEST_CXX=g++
 

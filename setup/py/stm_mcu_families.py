@@ -1,0 +1,6 @@
+
+SUPPORTED_MCU_FAMILIES = [
+
+]
+
+

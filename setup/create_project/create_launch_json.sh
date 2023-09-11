@@ -51,7 +51,7 @@ for cores in ${MCU_SRC_DIRS[@]}; do
         svd_file=$(echo "${svd_file}" |  grep -E "${UPPERCASE_MCU_FAMILY:0:8}[a-z A-Z 0-9]_C${cores:0:3}\.svd$")
         else
             cores=""
-            executable=\"./${BUILD_DIR}/${PROJECT_NAME}.elf\"
+            executable=\"./${BUILD_DIR}/${PROJECT_NAME}.bin\"
     fi
 
     svd_file="${svd_file#*/}"
@@ -59,32 +59,19 @@ for cores in ${MCU_SRC_DIRS[@]}; do
     DEDICATED_CONFIGS+=$(cat << EOM
 {
     "name": "Cortex Debug ${cores}",
-    "cwd": "${workspaceFolder}",
+    "cwd": "\${workspaceFolder}",
+    "type": "cortex-debug",
     "executable": $executable,
     "request": "launch",
-    "type": "cortex-debug",
+    "servertype": "stlink",
+    "device" : "STM32H755ZI",
+    "interface" : "swd",
+    "serialNumber" : "",
     "runToEntryPoint": "main",
-    "servertype": "openocd",
-    "configFiles": [
-        "/usr/local/share/openocd/scripts/interface/${INTERFACE}.cfg",
-        "/usr/local/share/openocd/scripts/${BOARD_OR_TARGET}/${BOARD_OR_TARGET_VALUE}.cfg"
-    ],
-    "svdFile": "${svd_file}"
+    "svdFile": "${svd_file}",
+    "v1" : false,
+    "showDevDebugOutput" : "both"
 
-},
-{
-    "name": "Flash and Debug ${cores}",
-    "cwd": "${workspaceFolder}",
-    "executable": $executable,
-    "request": "launch",
-    "type": "cortex-debug",
-    "runToEntryPoint": "main",
-    "servertype": "openocd",
-    "configFiles": [
-        "/usr/local/share/openocd/scripts/interface/${INTERFACE}.cfg",
-        "/usr/local/share/openocd/scripts/${BOARD_OR_TARGET}/${BOARD_OR_TARGET_VALUE}.cfg"
-    ],
-    "preLaunchTask": "Flash Core ${cores}"
 },
 EOM
 )
