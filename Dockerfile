@@ -16,10 +16,10 @@ COPY setup/container_packages_installation_scripts ${INSTALLATION_SCRIPTS_LOCATI
 
 RUN apt-get update -y && \
     apt-get upgrade -y && \
-    apt-get install -y pixz wget curl gcc g++ git subversion autoconf pkg-config automake libtool cmake make build-essential ninja-build zsh \
+    apt-get install -y pixz wget curl gcc g++ git unzip subversion autoconf pkg-config automake libtool cmake make build-essential ninja-build zsh \
     libusb-1.0.0 libusb-dev libusb-1.0.0-dev gnupg libncursesw5 libncurses5-dev \
     bash-completion vim htop libreadline-dev clang clang-tidy lcov flawfinder cppcheck && \
-    apt-get clean
+    apt-get clean 
 
 #install scripts
 RUN chmod +x ${INSTALLATION_SCRIPTS_LOCATION}/*
@@ -40,3 +40,11 @@ RUN apt-get update && \
 
 COPY setup/create_project ${CREATE_PROJECT_SCRIPT}
 ENV PATH="${PATH}:${CREATE_PROJECT_SCRIPT}"
+
+# Set zsh as the default shell
+RUN sed -i -e "s/bin\/bash/bin\/zsh/" /etc/passwd
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+
+
+
