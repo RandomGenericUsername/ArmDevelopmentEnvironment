@@ -17,7 +17,7 @@ expect -exact "--More--" { send "q" }
 expect -- "I ACCEPT (y) / I DO NOT ACCEPT (N)" { send "y\r" }
 
 # Wait for the STM32CubeCLT install directory prompt and just press "Enter".
-expect -- "STM32CubeCLT install dir?.*" { send "\r" }
+#expect -- "STM32CubeCLT install dir?.*" { send "\r" }
 
 
 # Wait for the script to complete.

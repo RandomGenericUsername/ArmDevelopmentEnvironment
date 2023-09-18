@@ -9,4 +9,5 @@ cd build
 cmake ..
 make
 make install
+ldconfig
 cd -

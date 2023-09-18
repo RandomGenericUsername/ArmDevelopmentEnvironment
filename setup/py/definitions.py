@@ -19,3 +19,15 @@ TEST_C_FLAGS = f"-std={TEST_C_STDR} -g3 -O0 -Wall"
 TEST_CXX_FLAGS = f"-std={TEST_CXX_STDR} -g3 -O0 -Wall"
 
 
+MCU_SRC_DIR_DEFAULT = "Src"
+CORE_DIR = "Core"
+STARTUP_DIR = "Startup"
+TESTS_DIR = "Tests"
+BUILD_DIR = "Build"
+LINKER_DIR = STARTUP_DIR
+STARTUP_SCRIPT_DIR = STARTUP_DIR
+DRIVERS_DIR = "Drivers"
+UTILS_DIR = "Utils"
+INC_DIR = "Include"
+COMMON_DIR = "Common"
+

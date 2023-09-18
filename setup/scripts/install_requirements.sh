@@ -66,19 +66,37 @@ assignPackageManager()
     fi
 }
 
+installMongoDBUbuntu()
+{
+
+}
+installMongoDBFedora()
+{
+
+}
+installMongoDB()
+{
+    #uninstallDocker
+    if [ "${PACKAGE_MANAGER}" == "apt-get" ]; then
+        installMongoDBUbuntu
+        elif [ "${PACKAGE_MANAGER}" == "dnf" ]; then
+        installMongoDBFedora
+    fi
+}
+
 
 # Declare the PACKAGE_MANAGER variable
 PACKAGE_MANAGER=""
 
 assignPackageManager
-installDocker
+
 eval "sudo $PACKAGE_MANAGER install git make curl wget"
 eval "sudo $PACKAGE_MANAGER update"
 eval "sudo $PACKAGE_MANAGER install python3"
 eval "sudo $PACKAGE_MANAGER install python3-pip"
-eval "sudo $PACKAGE_MANAGER install redis-server"
+installDocker
+installMongoDB
+
 sudo systemctl start docker
-sudo systemctl start redis-server
-pip3 install redis
 
 
