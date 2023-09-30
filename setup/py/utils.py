@@ -1,6 +1,7 @@
 
 import json
 import re
+from typing import Any, Optional, Callable, List, get_args, get_origin
 
 def convert_to_raw_url(github_url):
     """
@@ -22,33 +23,37 @@ def convert_to_raw_url(github_url):
 
 
 # Define a unique sentinel object
-_NO_DEFAULT = object()
 class TypedProperty:
-    def __init__(self, data_type, default=_NO_DEFAULT, validator=None):
+    def __init__(self, data_type: Any, validator: Optional[Callable]=None):
         self.data_type = data_type
         self.validator = validator
-        self.default = default
-        self._has_default = default is not _NO_DEFAULT
 
     def __set_name__(self, owner, name):
         self.name = name
 
     def __get__(self, instance, owner):
-        return instance.__dict__.get(self.name, self.default)
+        if instance is None:
+            return self
+        return instance.__dict__.get(self.name)
 
     def __set__(self, instance, value):
-        if not isinstance(value, self.data_type):
+        origin = get_origin(self.data_type)
+        args = get_args(self.data_type)
+
+
+        if origin is list and not isinstance(value, list):
+            raise TypeError(f"Expected a list, got {type(value)}")
+        elif origin is list and not all(isinstance(item, args[0]) for item in value):
+            raise TypeError(f"All items in list must be of type {args[0]}")
+        elif origin is not list and not isinstance(value, self.data_type):
             raise TypeError(f"Expected {self.data_type}, got {type(value)}")
-        
+
         # If a validator function is provided, use it to validate the value
         if self.validator and not self.validator(value):
             raise ValueError(f"Invalid value for {self.name}: {value}")
         
         instance.__dict__[self.name] = value
     
-    @property
-    def has_default(self):
-        return self._has_default
 
 
 # Validators
